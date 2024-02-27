@@ -13,7 +13,7 @@ void main() {
   vec4 texture = texture2D(u_texture_0, st);
   color = texture.rgb;
 
-  vec2 imageResolution = vec2(1532, 1544);
+  vec2 imageResolution = vec2(2532, 1544);
   imageResolution = imageResolution / 10.0;
   vec2 texelSize = 1.0 / imageResolution;
 

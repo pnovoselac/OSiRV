@@ -28,34 +28,36 @@ void main() {
     st.x *= u_resolution.x/u_resolution.y;
     vec3 color = vec3(0.4627, 0.1216, 0.4392);
 
-    st *= 8.0;
+    st *= 1.0;
 
     vec2 i_st = floor(st);
-    vec2 f_st = fract(st);
+    vec2 f_st = 9.0*fract(st);
 
     float m_dist = 1.;  // minimum distance
 
-    for (int y= -1; y <= 1; y++) {
-        for (int x= -1; x <= 1; x++) {
+    for (int y= 0; y <= 9; y++) {
+        for (int x= 0; x <= 9; x++) {
 
             vec2 neighbor = vec2(float(x),float(y));
 
             vec2 point = random2(i_st + neighbor);
 
 			// Animacija i šum
-            point = 0.5*sin(1.5*noise(f_st))+ 0.5*sin(u_time + 6.5*point);
+            point = 0.2*sin(1.5*noise(f_st))+ 0.5*sin(u_time + 6.5*point);
 
             vec2 diff = neighbor + point - f_st;
+            diff=diff;
             float dist = length(diff);
-
-            m_dist =min(m_dist, 3.*dist)*min(m_dist, 3.*dist);//doradjena min dist
+            
+            m_dist =min(m_dist, 3.0*dist);//doradjena min dist  
         }
     }
+
 
     color += m_dist;
 
     // Centar stanice
-    color += 1.0*(0.7-step(0.05, m_dist))*vec3(0.949, 0.8235, 0.9843);
+    color += 1.0*(.7-step(0.4, m_dist))*vec3(0.949, 0.8235, 0.9843);
 
-    gl_FragColor = vec4(color,0.9)*vec4(0.9843, 0.9765, 0.4784, 1.0);
+    gl_FragColor = vec4(color,1.0)*vec4(0.9843, 0.9765, 0.4784, 1.0);
 }
