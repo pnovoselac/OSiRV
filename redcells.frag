@@ -53,7 +53,6 @@ void main() {
         }
     }
 
-
     color += m_dist;
 
     // Centar stanice
