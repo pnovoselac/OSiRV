@@ -26,12 +26,12 @@ float noise(vec2 st) {
 void main() {
     vec2 st = gl_FragCoord.xy/u_resolution.xy;
     st.x *= u_resolution.x/u_resolution.y;
-    vec3 color = vec3(0.4627, 0.1216, 0.4392);
-
+    vec3 color = vec3(0.7137, 0.7412, 0.3529);
     st *= 1.0;
 
     vec2 i_st = floor(st);
-    vec2 f_st = 9.0*fract(st);
+    vec2 f_st = 5.*fract(st);
+
 
     float m_dist = 1.;  // minimum distance
 
@@ -43,7 +43,7 @@ void main() {
             vec2 point = random2(i_st + neighbor);
 
 			// Animacija i šum
-            point = 0.2*sin(1.5*noise(f_st))+ 0.5*sin(u_time + 6.5*point);
+            point = 0.2*sin(1.5*noise(f_st))+ 0.5*sin(6.5*point);
 
             vec2 diff = neighbor + point - f_st;
             diff=diff;
@@ -54,9 +54,12 @@ void main() {
     }
 
     color += m_dist;
-
     // Centar stanice
-    color += 1.0*(.7-step(0.4, m_dist))*vec3(0.949, 0.8235, 0.9843);
+    color *= (1.-step(0.9, m_dist));
 
-    gl_FragColor = vec4(color,1.0)*vec4(0.9843, 0.9765, 0.4784, 1.0);
+    color=1.0-color;
+    color+=vec3(0.9333, 0.6353, 1.0);
+    color*=vec3(0.9725, 0.9608, 0.3725);
+
+    gl_FragColor = vec4(color, 1.0);
 }

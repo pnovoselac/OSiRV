@@ -5,6 +5,7 @@ precision mediump float;
 uniform float u_time;
 uniform vec2 u_resolution;
 varying vec2 v_texcoord;
+uniform sampler2D u_texture_0;
 
 vec2 random2( vec2 p ) {
     return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
@@ -51,35 +52,38 @@ float snoise(vec2 v) {
     vec3 g;
     g.x  = a0.x  * x0.x  + h.x  * x0.y;
     g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-    return 130.0 * dot(m, g);
+    return 100.0 * dot(m, g);
 }
 
 void main() {
 
     vec2 center = u_resolution.xy*0.5;
-    vec2 nucleusCenter =u_resolution.xy*0.45;
-    float radius = 0.3 * u_resolution.x; 
-    float nucleusRadius = 0.22 * (u_resolution.x); 
+    vec2 nucleusCenter =u_resolution.xy*0.48;
+    float radius = 0.2 * u_resolution.x; 
+    float nucleusRadius = 0.13 * (u_resolution.x); 
 
     float dist = distance(v_texcoord * u_resolution, center);
     float nucleusDist = distance(v_texcoord * u_resolution, nucleusCenter);
 
-    float snoiseValue = snoise(v_texcoord * 10.0);
-    float noiseValue = noise(v_texcoord * 10.0);
+    float snoiseValue =snoise(v_texcoord * 25.0);
+    float noiseValue = noise(v_texcoord * 15.0);
     radius += noiseValue * 25.0;
-    nucleusRadius += noiseValue * 70.0;
+    nucleusRadius += noiseValue * 45.0;
 
-    float blob = smoothstep(radius+ 10.0, radius, dist);
+    float blob = smoothstep(radius+1.0, radius, dist);
     float nucleusBlob = smoothstep(nucleusRadius + 10.0, nucleusRadius, nucleusDist);
     
     if(blob==1.0){
-        blob += snoiseValue * 0.7;
+        blob += 1.-snoiseValue *.7;
     }
     else{
 
+        vec4 redCellColor = texture2D(u_texture_0, v_texcoord);
+        gl_FragColor = redCellColor;
+        return;
     }
-    vec4 nucleusColor = vec4(0.2627, 0.0627, 0.2471, 1.0);
-    vec4 finalColor = mix(vec4(vec3(blob)*vec3(0.4039, 0.2157, 0.3569), 1.0), nucleusColor, nucleusBlob);
+    vec4 nucleusColor = vec4(0.41, 0.15, 0.39, 1.0);
+    vec4 finalColor = mix(vec4(vec3(blob)*vec3(0.5216, 0.3608, 0.498), 1.0), nucleusColor, nucleusBlob);
 
-    gl_FragColor = finalColor*vec4(0.9569, 0.9529, 0.698, 1.0);
+    gl_FragColor = finalColor*vec4(0.9765, 0.9725, 0.6588, 1.0);
 }
